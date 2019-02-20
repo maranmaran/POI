@@ -48,7 +48,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.locationService.currentAddressEventEmitter
       .subscribe(
         (currentAddress: Address) => {
-          console.log(currentAddress);
           this.currentAddress = currentAddress;
           this.cLat = currentAddress.geometry.location.lat();
           this.cLng = currentAddress.geometry.location.lng();
@@ -81,8 +80,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   onSelectedPlace(place: Address) {
     console.log(place);
-    var marker = document.getElementById(place.id);
-    console.log(marker);
   }
 
   ngOnDestroy(): void {

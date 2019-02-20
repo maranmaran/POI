@@ -35,7 +35,6 @@ export class LocationService {
         types: this.typesToSearch
       },
       (places: Address[]) => {
-        console.log(places);
         this.placesEmitter.emit(places);
       }
     );
