@@ -1,0 +1,17 @@
+/* You can add global styles to this file, and also import other style files */
+
+.container-fluid {
+  margin: 0;
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+.html,
+body {
+  width: 100%;
+  height: 100vh;
+}
+
+agm-map {
+  height: -webkit-fill-available;
+}
