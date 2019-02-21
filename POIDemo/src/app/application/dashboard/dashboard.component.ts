@@ -1,13 +1,9 @@
-import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, OnDestroy} from '@angular/core';
 import { LocationService } from '../../../business/services/location.service';
 import { Address } from 'ngx-google-places-autocomplete/objects/address';
 import { MapsAPILoader } from '@agm/core';
 import {  InfoWindow } from '@agm/core/services/google-maps-types';
 import { SidenavService } from 'src/business/services/sidenav.service';
-import { HtmlParser } from '@angular/compiler';
-import { element } from 'protractor';
-import { MatSidenav } from '@angular/material';
-import { map } from 'rxjs/operators';
 declare let google: any;
 
 @Component({
