@@ -13,6 +13,28 @@ body {
   height: 100vh;
 }
 
-agm-map {
-  height: -webkit-fill-available;
+
+.mat-drawer-container{
+  background-color: white !important;
+}
+
+.mat-drawer-content {
+  overflow: hidden !important;
+}
+
+::ng-deep .mat-drawer-inner-container {
+  overflow: hidden !important;
+}
+
+.sidenav {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 300px;
+  background: rgba(0, 0, 0, 0.67);
+}
+
+.sidenav-container {
+  position: absolute !important;
+  top: 0; bottom: 0; left: 0; right: 0;
 }

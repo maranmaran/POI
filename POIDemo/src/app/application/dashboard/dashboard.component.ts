@@ -1,24 +1,25 @@
-import { Component, OnInit, ViewChild, OnDestroy } from "@angular/core";
-import { LocationService } from "../../../business/services/location.service";
-import { Location } from "./../../../business/models/location.model";
-import { GooglePlaceDirective } from "ngx-google-places-autocomplete";
-import { Address } from "ngx-google-places-autocomplete/objects/address";
-import { FormGroup, FormControl } from "@angular/forms";
-import { MapsAPILoader, AgmMarker } from "@agm/core";
-import { Marker, InfoWindow } from "@agm/core/services/google-maps-types";
+import { Component, OnInit, OnDestroy, ViewChild, EventEmitter, Output } from '@angular/core';
+import { LocationService } from '../../../business/services/location.service';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { MapsAPILoader } from '@agm/core';
+import {  InfoWindow } from '@agm/core/services/google-maps-types';
+import { SidenavService } from 'src/business/services/sidenav.service';
+import { HtmlParser } from '@angular/compiler';
+import { element } from 'protractor';
+import { MatSidenav } from '@angular/material';
 import { map } from 'rxjs/operators';
 declare let google: any;
 
 @Component({
-  selector: "app-dashboard",
-  templateUrl: "./dashboard.component.html",
-  styleUrls: ["./dashboard.component.scss"],
-  providers: [LocationService]
+  selector: 'app-dashboard',
+  templateUrl: './dashboard.component.html',
+  styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private mapsAPILoader: MapsAPILoader,
-    private locationService: LocationService
+    private locationService: LocationService,
+    private sidenavService: SidenavService
   ) { }
 
   map: any;
@@ -35,7 +36,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.locationService.placesEmitter.subscribe(
       (places: Address[]) => this.places = places,
       err => console.log(err)
-    )
+    );
+
+    this.locationService.typesChange.subscribe(
+      () => this.getPlacesInRadius(),
+      err => console.log(err)
+    );
   }
 
   mapReady($event: any) {
@@ -62,6 +68,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.cLat = currentAddress.geometry.location.lat();
     this.cLng = currentAddress.geometry.location.lng();
 
+    // flush on address change
+    // Bug: Repro steps -> remove below line and do next steps
+    // when hovering init address markers everything is fine
+    // change address and try to hover -> observe console
+    this.previousInfoWindow = null;
+
     this.getPlacesInRadius();
   }
 
@@ -69,20 +81,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.locationService.getPointsOfInterest(this.map, { lat: this.cLat, lng: this.cLng });
   }
 
-  onInteractWithMarker(infoWindow: InfoWindow, map: any) {
-    if (map.lastOpen != null) {
-      map.lastOpen.close();
+  // tslint:disable-next-line:member-ordering
+  previousInfoWindow: InfoWindow;
+  onInteractWithMarker(infowindow: InfoWindow) {
+    if (this.previousInfoWindow) {
+      this.previousInfoWindow.close();
     }
 
-    map.lastOpen = infoWindow;
-    infoWindow.open();
+    this.previousInfoWindow = infowindow;
+    infowindow.open();
   }
 
   onSelectedPlace(place: Address) {
-    console.log(place);
+    // mimic click event since I don't know how to access directive reference and open infowindow
+    const infoWindowHttpElement = document.getElementById(place.id);
+    infoWindowHttpElement.click();
+  }
+
+  toggleSideNav() {
+    this.sidenavService.toggle();
   }
 
   ngOnDestroy(): void {
     this.locationService.placesEmitter.unsubscribe();
+    this.locationService.typesChange.unsubscribe();
+    this.locationService.currentAddressEventEmitter.unsubscribe();
   }
 }

@@ -1,32 +1,31 @@
-<div class="row mb-5 mt-5">
-  <div class="col-5 justify-content-center d-flex"></div>
+<div class="row mb-3">
+  <!-- sidenav open -->
+  <div class="col">
+    <div class="float-left" style="cursor: pointer" (click)="toggleSideNav()">
+      <i class="fa fa-cog"></i>
+    </div>
+  </div>
 </div>
-
 <div class="row">
+  <!--Places autocomplete and list-->
   <div class="col">
     <div class="form-group">
       <input class="form-control mb-5" ngx-google-places-autocomplete (onAddressChange)="handleAddressChange($event)" />
-
       <app-places-list (selectedPlace)="onSelectedPlace($event)"></app-places-list>
     </div>
   </div>
+  <!--Google map-->
   <div class="col">
-
-    <agm-map #map (mapReady)="mapReady($event)" [latitude]="cLat" [longitude]="cLng" [fitBounds]="true"
+    <agm-map [fitBounds]="true" #map (mapReady)="mapReady($event)" [latitude]="cLat" [longitude]="cLng"
       [clickableIcons]="false">
-
-      <agm-marker *ngFor="let place of places" [latitude]="place.geometry.location.lat()"
-        [longitude]="place.geometry.location.lng()" (mouseOver)="onInteractWithMarker(infoWindow, map)"
-        (click)="onInteractWithMarker(infoWindow, map)">
-
-        <agm-info-window id="{{ place.id }}" [disableAutoPan]="false" #infoWindow id="place.id">
-          <p> {{ place.name }} </p>
-          <p> Rating: <star-rating [starType]="'icon'" [rating]="place.rating"></star-rating>
-          </p>
-        </agm-info-window>
-
-      </agm-marker>
-
+        <agm-marker [agmFitBounds]="true" *ngFor="let place of places" [latitude]="place.geometry.location.lat()" [longitude]="place.geometry.location.lng()"
+          (mouseOver)="onInteractWithMarker(infoWindow)" (click)="onInteractWithMarker(infoWindow)">
+          <agm-info-window id="{{ place.id }}" [disableAutoPan]="false" #infoWindow id="place.id">
+            <p> {{ place.name }} </p>
+            <p> Rating: <star-rating [starType]="'icon'" [rating]="place.rating"></star-rating>
+            </p>
+          </agm-info-window>
+        </agm-marker>
     </agm-map>
   </div>
 </div>

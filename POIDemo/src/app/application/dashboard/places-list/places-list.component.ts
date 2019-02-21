@@ -1,26 +1,18 @@
-import {
-  Component,
-  OnInit,
-  Input,
-  ViewChild,
-  AfterViewInit,
-  Output
-} from "@angular/core";
-import { Address } from "ngx-google-places-autocomplete/objects/address";
-import { MatPaginator, MatTableDataSource, MatSort } from "@angular/material";
-import { LocationService } from "../../../../business/services/location.service";
-import { filter } from "rxjs/operators";
+import { Component, OnInit, ViewChild, Output } from '@angular/core';
+import { Address } from 'ngx-google-places-autocomplete/objects/address';
+import { MatPaginator, MatTableDataSource, MatSort } from '@angular/material';
+import { LocationService } from '../../../../business/services/location.service';
 import { EventEmitter } from '@angular/core';
 
 @Component({
-  selector: "app-places-list",
-  templateUrl: "./places-list.component.html",
-  styleUrls: ["./places-list.component.scss"]
+  selector: 'app-places-list',
+  templateUrl: './places-list.component.html',
+  styleUrls: ['./places-list.component.scss']
 })
 export class PlacesListComponent implements OnInit {
   places: Address[] = [];
-  displayedColumns: string[] = ["name", "type"];
-  pageSize = 15;
+  displayedColumns: string[] = ['name', 'type'];
+  pageSize = 12;
   dataSource: MatTableDataSource<Address>;
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -28,9 +20,10 @@ export class PlacesListComponent implements OnInit {
 
   @Output() selectedPlace = new EventEmitter<Address>();
 
-  constructor(private locationService: LocationService) { }
+  constructor(public locationService: LocationService) { }
 
   ngOnInit(): void {
+
     this.locationService.placesEmitter.subscribe(
       (places: Address[]) => {
         this.places = places;
@@ -39,6 +32,8 @@ export class PlacesListComponent implements OnInit {
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
 
+        this.locationService.isLoading = false;
+
         // filter
         this.dataSource.filterPredicate = (data, filterValue) =>
           data.name
@@ -46,7 +41,7 @@ export class PlacesListComponent implements OnInit {
             .toLowerCase()
             .indexOf(filterValue.trim().toLowerCase()) !== -1 ||
           data.types
-            .join(", ")
+            .join(', ')
             .trim()
             .toLowerCase()
             .indexOf(filterValue.trim().toLowerCase()) !== -1;
@@ -64,7 +59,7 @@ export class PlacesListComponent implements OnInit {
   }
 
   formatOutput(types: string[]) {
-    const output = types.join(", ");
+    const output = types.join(', ');
     return output.trim();
   }
 
