@@ -19,6 +19,8 @@ Angular 7 project demo project using google maps
 </ul>
 
 ![](Homepage.PNG)
+<br/>
 ![](autocomplete.PNG)
+<br/>
 ![](types.PNG)
 
